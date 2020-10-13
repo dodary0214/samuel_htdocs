@@ -1,0 +1,1780 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script src="js/jquery.js"></script>
+<script src="js/colResizable-1.6.min.js"></script>
+<style>
+body {font-family: Arial;}
+
+/* Style the tab */
+div.tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the tab */
+div.tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 1px 7px;
+    transition: 0.3s;
+    font-size: 13px;
+}
+
+/* Change background color of buttons on hover */
+div.tab button:hover {
+    background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+div.tab button.active {
+    background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+div.scrollmenu {
+    background-color: #333;
+    overflow: auto;
+    white-space: nowrap;
+}
+
+div.scrollmenu a {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px;
+    text-decoration: none;
+}
+
+div.innersys {
+	display: inline;
+    vertical-align: middle;
+}
+html {
+  font-family: verdana;
+  font-size: 10pt;
+  line-height: 25px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  height: 130px;
+  font-size: 10pt;
+  overflow-x: scroll;
+  display: block;
+}
+
+thead {
+ 
+}
+
+thead,
+tbody {
+  display: block;
+}
+
+tbody {
+  height: 140px;
+}
+
+td,
+th {
+  min-width: 100px;
+  height: 25px;
+  border: 1px solid black ;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+}
+#my-textarea {
+	width: 100%;
+	height: 130px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+#inner{
+	display: inline-block;
+}
+#myp{
+	display: inline-block;
+}
+#data{
+	margin-top:-10px
+}
+#Query{
+	position:relative;
+	top:-13px;
+	margin-top:10px;
+	margin-bottom:30px;
+}
+#Choose{
+
+}
+
+#innerRes{
+	display: inline-block;
+}
+#ResSelectSystem{
+	display: inline-block;
+}
+#ResSelectQueryId{
+	display: inline-block;
+}
+#Res {
+	margin-bottom: -20px;
+}
+#ResSelect {
+	margin-bottom: -20px;
+}
+#ResSelect2 {
+	margin-bottom: 10px;
+}
+#Run{
+	margin-bottom: 16px;
+}
+#buttonIdShow {
+	width: 130px;
+}
+#buttonResShow {
+	width: 130px;
+}
+#my-textareaMonitoring {
+	width: 100%;
+	height: 100px;
+	background-color: grey;
+	color: white;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+#buttonRun {
+	margin-top: 15px;
+}
+#performcontainer2,#optcontainer2 {
+	margin-top: -23px;
+}
+#performcontainer1 {
+	margin-top: -10px;
+}
+#chartContainer1 {
+	margin-top: -27px;
+}
+</style>
+</head>
+<body>
+
+<h3 style="margin-bottom: -3px; margin-top: -5px;">SAMUEL</h3> 
+
+<div class="tab">
+  <button class="tablinks" onclick="openCity(event, 'eval')">Query Evaluation</button>
+  <button class="tablinks" onclick="openCity(event, 'compare')">Performance Comparison</button>
+</div>
+
+<div id="eval" class="tabcontent">
+	<div id="data">
+	<h3 id = "inner">DataSet</h3> 
+	<select name="data" id = "selectdata" style="margin-left:5px;width:110px" onchange="DataSelectEvent()">
+		<option value="WatDiv1M">WatDiv-1M</option>
+		<option value="WatDiv10M">WatDiv-10M</option>
+		<option value="WatDiv100M">WatDiv-100M</option>
+		<option value="WatDiv1B">WatDiv-1B</option>
+		<option value="LUBM100M">LUBM-100M</option>
+	</select>
+	<h3 id = "inner" style="margin-left:5px;">QuerySet</h3> 
+	<select name="query" id = "selectquery" style="margin-left:5px;width:110px" onchange="QuerySelectEvent()">
+		<option value="WatDiv10">WatDiv-10</option>
+		<option value="WatDiv100">WatDiv-100</option>
+		<option value="WatDiv500" selected="selected">WatDiv-700</option>
+		<option value="WatDiv1000">WatDiv-1000</option>
+		<option value="WatDiv10000">WatDiv-10000</option>
+		<!--<option value="LUBM14">LUBM-14</option>-->
+	</select>
+	</div>
+	<div id="Query">
+	<input type="submit" value="Query Descriptions" style="display:inherit;" onclick = "readQueries();">
+	<textarea rows="7" cols="55" style="position:relative;margin-top:5px" id='my-textarea' readonly="readonly" >
+	</textarea>
+	</div>
+	<div id="Choose" style="margin-top:-25px;">
+	<h3>Choose System</h3> 
+	<div id="system" style="margin-top:-15px">
+		<label id="inner"><input type="checkbox" id="my-checksamuel" checked="checked" name="runsystem" value="samuel" onchange="SystemSelectEvent()"> SAMUEL<br></label>
+		<label id="inner"><input type="checkbox" name="runsystem" value="h2rdf"> H2RDF+<br></label>
+		<label id="inner"><input type="checkbox" name="runsystem" value="shape"> SHAPE<br></label>
+		<label id="inner"><input type="checkbox" id="my-checkshard" name="runsystem" value="shard" onchange="SystemSelectEvent()"> SHARD<br></label>
+		<label id="inner"><input type="checkbox" name="runsystem" value="rdf3x"> RDF-3X<br></label>
+	</div>
+	</div>
+	
+	<div id="Optimization" style="margin-top:-10px">
+	<h3>Choose Optimization Algorithm</h3> 
+	<div name="opt" id="opt" style="margin-top:-15px">
+		<label id="inner"><input type="radio" checked="checked"  name="opt" value="OPTREP"> OPT_REP<br></label>
+		<label id="inner"><input type="radio" name="opt" value="OPT"> OPT<br></label>
+		<label id="inner"><input type="radio" name="opt" value="OPTREV"> OPT_REV<br></label>
+	<label id="inner">	<input type="radio" name="opt" value="NAIVE"> Naive<br></label>
+	</div>
+	</div>
+	
+	<div id="Run" style="margin-top:-8px">
+	 <input id="buttonRun" type = "submit" value="Run System" onclick = "runAction();">
+	<!--<p id="myp" name="myp" style="text-align:left; margin-left: 9px;"><b>Not running systems now</b></p>-->
+	<textarea rows="7" cols="55" style="position:relative;margin-top:5px" id='my-textareaMonitoring' readonly="readonly" >
+	</textarea>
+	</div>
+	
+	<div id="Result" style="margin-top:-22px">
+	<div id="Res">
+
+	<h3 id="innerRes">Query Results</h3> 
+	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<div id="ResSelect">
+		<p id="ResSelectSystem" style="text-align:left;  margin-left: 3px;">System: </p> 
+		<select name="systemselect" id = "my-systemresselect" style="width: 90px">
+		<option value="system">System</option>
+		<!--<option value="samuel">SAMUEL</option>
+		<option value="h2rdf">H2RDF+</option>
+		<option value="shape">SHAPE</option>
+		<option value="shard">SHARD</option>
+		<option value="rdf3x">RDF-3X</option>-->
+		</select>
+		<input id="buttonIdShow" type = "submit" value = "Get Query Ids" style="margin-left: 10px;" onclick = "showQueryIdsTest();">
+	</div>
+	<div id="ResSelect2">
+		<p id="ResSelectQueryId" style="text-align:left;  margin-left: 3px;">QueryId: </p> 
+		<select name="queryresselect" id = "my-queryresselect" style="width: 90px">
+		<option value="none">QueryID</option>
+		</select>
+		<input id="buttonResShow" type = "submit" value = "Get Query Results" style="margin-left: 10px;" onclick = "showQueryResults();">
+	</div>
+	<table id='table' border="1" style="margin-top:-15px">
+<!--	  <thead>
+		<tr>
+		</tr>
+	  </thead>
+	  <tbody id='my-tbody'>
+	 </tbody> -->
+	</table>
+</div>
+	</div>
+	
+	
+
+<div id="compare" class="tabcontent">
+	
+	<div id="performcontainer1" class="performcontainer1">
+	<h3 id = "inner">DataSet</h3> 
+	<select name="perform-data" id="selectdata-perform" style="margin-left:5px;width:110px" onchange="DataSelectEventPerform()">
+		<option value="WatDiv1M">WatDiv-1M</option>
+		<option value="WatDiv10M">WatDiv-10M</option>
+		<option value="WatDiv100M">WatDiv-100M</option>
+		<option value="WatDiv1B">WatDiv-1B</option>
+		<option value="LUBM100M">LUBM-100M</option>
+	</select>
+	<h3 id = "inner" style="margin-left:5px;">QuerySet</h3> 
+	<select name="perform-query" id="selectquery-perform" style="margin-left:5px;width:110px" onchange="QuerySelectEventPerform()">
+		<option value="WatDiv10">WatDiv-10</option>
+		<option value="WatDiv100">WatDiv-100</option>
+		<option value="WatDiv500" selected="selected">WatDiv-700</option>
+		<option value="WatDiv1000">WatDiv-1000</option>
+		<option value="WatDiv10000">WatDiv-10000</option>
+		<!--<option value="LUBM14">LUBM-14</option>-->
+	</select>
+	<h3 id = "inner" style="margin-left:5px;">Date</h3> 
+	<select name="query" id = "selectdate-perform" style="margin-left:5px;width:150px" onchange="DateSelectEventPerform()">
+		<option value="none">Empty Date</option>
+	</select>
+	</div>
+	<!--
+	</br>
+	<div id="performcontainer2" class="performcontainer2">
+	<h3 id = "inner">System</h3> 
+	<select name="perform-system" id = "selectsystem-perform" style="margin-left:7px;width:110px" onchange="SystemSelectEventPerform()">
+		<option value="samuel">SAMUEL</option>
+		<option value="h2rdf">H2RDF+</option>
+		<option value="shape">SHAPE</option>
+		<option value="shard">SHARD</option>
+		<option value="rdf3x">RDF-3X</option>
+	</select>
+	<h3 id = "inner" style="margin-left:5px;">Date</h3> 
+	<select name="query" id = "selectdate-perform" style="margin-left:5px;width:150px" onchange="DateSelectEvent()">
+		<option value="none">Empty Date</option>
+	</select>
+	</div>
+	-->
+	</br>
+	<div id="chartContainer1" style="width: 80%; height: 450px;display: inline-block;"></div> 
+	</br>
+	<h3 id = "inner">DataSet</h3> 
+	<select name="opt-data" id = "selectdata-opt" style="margin-left:5px;width:110px" onchange="DataSelectEventOpt()">
+		<option value="WatDiv1M">WatDiv-1M</option>
+		<option value="WatDiv10M">WatDiv-10M</option>
+		<option value="WatDiv100M">WatDiv-100M</option>
+		<option value="WatDiv1B">WatDiv-1B</option>
+		<option value="LUBM100M">LUBM-100M</option>
+	</select>
+	<h3 id = "inner" style="margin-left:5px;">QuerySet</h3> 
+	<select name="opt-query" id = "selectquery-opt" style="margin-left:5px;width:110px" onchange="OptSelectEventOpt()">
+		<option value="WatDiv10">WatDiv-10</option>
+		<option value="WatDiv100">WatDiv-100</option>
+		<option value="WatDiv500" selected="selected">WatDiv-700</option>
+		<option value="WatDiv1000">WatDiv-1000</option>
+		<option value="WatDiv10000">WatDiv-10000</option>
+		<!--<option value="LUBM14">LUBM-14</option>-->
+	</select>
+	<h3 id = "inner" style="margin-left:5px;">Date</h3> 
+	<select name="opt-date" id = "selectdate-opt" style="margin-left:5px;width:150px" onchange="DateSelectEventOpt()">
+		<option value="none">Empty Date</option>
+		<!--<option value="LUBM14">LUBM-14</option>-->
+	</select>
+	<!--</br>
+	<div id="optcontainer2" class="optcontainer2">
+	<h3 id = "inner">Optimization Algorithm</h3> 
+	<select name="opt-opt" id = "selectopt-opt" style="margin-left:7px;width:110px" onchange="OptSelectEventOpt()">
+		<option value="optrep">OPT_REP</option>
+		<option value="opt">OPT</option>
+		<option value="optrev">OPT_REV</option>
+		<option value="naive">NAIVE</option>
+		</select>
+	<h3 id = "inner" style="margin-left:5px;">Date</h3> 
+	<select name="opt-date" id = "selectdate-opt" style="margin-left:5px;width:150px" onchange="OptSelectEventOpt()">
+		<option value="none">Empty Date</option>
+	</select>
+	</div>-->
+	</br>
+	<div id="chartContainer2" style="width: 80%; height: 450px;display: inline-block;"></div>
+</div>
+
+<script>
+$(document).ready(function(){
+   $.get('queryset/watdiv_100q_edbtdemo.txt', function(data) {
+       //console.log(data);
+	   $("#my-textarea").val(data);
+    }, "text");
+   $("#my-textareaMonitoring").val('Not Running Systems Now...');
+   document.getElementById("buttonIdShow").disabled = true;
+   document.getElementById("buttonResShow").disabled = true;
+   SystemSelectEvent();
+
+    var shout_text = "it's simple file write test";
+
+    var shout = $.ajax({
+          type: 'POST',
+          url: "shorttest.txt",
+          data: "it's simple file write test",
+          success: function(){ 
+
+          }
+	});
+
+});
+</script>
+<script>
+window.onload = function () {
+//QuerySelectEventPerformInit();
+//OptSelectEventOptInit();
+}
+
+function rednerChart1(str) {
+	var obj = JSON.parse(str);
+	console.log(str);
+	if (jQuery.isEmptyObject(obj)) {
+			return;
+	}
+	var arrExec = [0, 0, 0, 0, 0];
+	for (i = 0; i < obj.arr.length; i++) {
+		console.log(obj.arr[i].exectime);
+		if (obj.arr[i].system == "samuel") {
+			arrExec[4] = obj.arr[i].exectime/1000;
+		} else if (obj.arr[i].system == "h2rdf") {
+			arrExec[3] = obj.arr[i].exectime/1000;
+		} else if (obj.arr[i].system == "shape") {
+			arrExec[2] = obj.arr[i].exectime/1000;
+		} else if (obj.arr[i].system == "shard") {
+			arrExec[1] = obj.arr[i].exectime/1000;
+		} else if (obj.arr[i].system == "rdf3x") {
+			arrExec[0] = obj.arr[i].exectime/1000;
+		}	
+	}
+	
+	var chart1 = new CanvasJS.Chart("chartContainer1",{
+    title :{
+        text: "System Performance"
+    },
+	dataPointWidth: 45,
+	width: 600,
+	height: 430,
+    data: [{
+	type: "column",
+        dataPoints : [
+	    { label: "RDF3X",  y: arrExec[0]  },
+	    { label: "SHARD", y: arrExec[1]  },
+	    { label: "SHAPE", y: arrExec[2]  },
+	    { label: "H2RDF+",  y: arrExec[3]  },
+	    { label: "SAMUEL",  y: arrExec[4]  }
+	]
+    }]
+	});	
+	chart1.render();
+}
+
+
+function rednerChart2(str) {
+	var obj = JSON.parse(str);
+	console.log(str);
+	if (jQuery.isEmptyObject(obj)) {
+			return;
+	}
+	var arrExec = [0, 0, 0, 0];
+	for (i = 0; i < obj.arr.length; i++) {
+		console.log(obj.arr[i].exectime);
+		if (obj.arr[i].opt == "optrep") {
+			arrExec[3] = obj.arr[i].exectime/1000;
+		} else if (obj.arr[i].opt == "opt") {
+			arrExec[2] = obj.arr[i].exectime/1000;
+		} else if (obj.arr[i].opt == "optrev") {
+			arrExec[1] = obj.arr[i].exectime/1000;
+		} else if (obj.arr[i].opt == "naive") {
+			arrExec[0] = obj.arr[i].exectime/1000;
+		} 
+	}
+	
+	var chart2 = new CanvasJS.Chart("chartContainer2",{
+    title :{
+	text: "Optimization Comparison"
+    },
+	dataPointWidth: 45,
+	width: 600,
+	height: 430,
+    data: [{
+	type: "column",
+	dataPoints : [
+	    { label: "NAIVE",  y: arrExec[0] },
+	    { label: "OPT_REV", y: arrExec[1] },
+	    { label: "OPT", y: arrExec[2] },
+	    { label: "OPT_REP",  y: arrExec[3] }
+	]
+    }]
+	});
+	
+	chart2.render();
+}
+
+function DateSelectEventPerform() {
+	var data = document.getElementById("selectdata-perform").value;
+	var query = document.getElementById("selectquery-perform").value;
+    var date = document.getElementById("selectdate-perform").value;
+    
+	if (date == "select") {
+		return;
+	}
+	// insert a new tuple into db
+	var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+		console.log("xmlhttp: " + xmlhttp.responseText);
+		//var obj = JSON.parse(xmlhttp.responseText);
+		rednerChart1(xmlhttp.responseText);
+		/*if (jQuery.isEmptyObject(obj)) {
+			return;
+		}*/
+		//rednerChart1(obj.arr);
+		/*var dps = [];
+		for (i = 0; i < obj.arr.length; i++) {
+			var date = obj.arr[i].exectime;
+			var sys = obj.arr[i].system;
+			console.log(obj.arr[i].exectime);
+			console.log(obj.arr[i].system);
+			if (sys == "rdf3x")
+			dps.push({x : xVal, y: Number(allLines[i])});
+		}*/
+      }
+    }
+	if (data.includes("WatDiv")) {
+		if (query.includes("500")) {
+			console.log("phpselectexec_perform.php?dataflag=watdiv&&dataset="+data.replace("WatDiv","")+"&&queryset=700&&reg_date="+date);
+		} else {
+			console.log("phpselectexec_perform.php?dataflag=watdiv&&dataset="+data.replace("WatDiv","")+"&&queryset="+query.replace("WatDiv","")+"&&reg_date="+date);
+		}
+		xmlhttp.open("GET", "phpselectexec_perform.php?dataflag=watdiv&&dataset="+data.replace("WatDiv","")+"&&queryset="+query.replace("WatDiv","")+"&&reg_date="+date, true);
+	} else {
+		xmlhttp.open("GET", "phpselectexec_perform.php?&&dataflag=lubm&&dataset="+data.replace("LUBM","")+"&&queryset="+query.replace("LUBM","")+"&&reg_date="+date, true);
+	}
+    xmlhttp.send();
+}
+
+function DateSelectEventOpt() {
+	var data = document.getElementById("selectdata-opt").value;
+	var query = document.getElementById("selectquery-opt").value;
+    var date = document.getElementById("selectdate-opt").value;
+	
+    if (date == "select") {
+		return;
+	}
+	
+	// insert a new tuple into db
+	var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+		console.log("xmlhttp: " + xmlhttp.responseText);
+		//var obj = JSON.parse(xmlhttp.responseText);
+		rednerChart2(xmlhttp.responseText);
+		/*if (jQuery.isEmptyObject(obj)) {
+			return;
+		}*/
+		//rednerChart1(obj.arr);
+		/*var dps = [];
+		for (i = 0; i < obj.arr.length; i++) {
+			var date = obj.arr[i].exectime;
+			var sys = obj.arr[i].system;
+			console.log(obj.arr[i].exectime);
+			console.log(obj.arr[i].system);
+			if (sys == "rdf3x")
+			dps.push({x : xVal, y: Number(allLines[i])});
+		}*/
+      }
+    }
+	if (data.includes("WatDiv")) {
+		if (query.includes("500")) {
+			console.log("phpselectexec_opt.php?dataflag=watdiv&&dataset="+data.replace("WatDiv","")+"&&queryset=700&&reg_date="+date);
+		} else {
+			console.log("phpselectexec_opt.php?dataflag=watdiv&&dataset="+data.replace("WatDiv","")+"&&queryset="+query.replace("WatDiv","")+"&&reg_date="+date);
+		}
+		xmlhttp.open("GET", "phpselectexec_opt.php?dataflag=watdiv&&dataset="+data.replace("WatDiv","")+"&&queryset="+query.replace("WatDiv","")+"&&reg_date="+date, true);
+	} else {
+		xmlhttp.open("GET", "phpselectexec_opt.php?&&dataflag=lubm&&dataset="+data.replace("LUBM","")+"&&queryset="+query.replace("LUBM","")+"&&reg_date="+date, true);
+	}
+    xmlhttp.send();
+}
+
+
+function DataSelectEvent() {
+    var x = document.getElementById("selectdata").value;
+    //document.getElementById("selectquery").innerHTML = "You selected: " + x;
+	if (x != "LUBM100M") {
+		$('#selectquery option').remove();
+		var option = $('<option></option>').attr({ value:'select' });
+		$('#selectquery').append(option.text('Select Query'));
+		option = $('<option></option>').attr({ value:'WatDiv10' });
+		$('#selectquery').append(option.text('WatDiv-10'));
+		option = $('<option></option>').attr({ value:'WatDiv100' });
+		$('#selectquery').append(option.text('WatDiv-100'));
+		option = $('<option></option>').attr({ value:'WatDiv500' });
+		$('#selectquery').append(option.text('WatDiv-700'));
+		option = $('<option></option>').attr({ value:'WatDiv1000' });
+		$('#selectquery').append(option.text('WatDiv-1000'));
+		option = $('<option></option>').attr({ value:'WatDiv10000' });
+		$('#selectquery').append(option.text('WatDiv-10000'));
+	}
+	else {
+		$('#selectquery option').remove();
+		var option = $('<option></option>').attr({ value:'LUBM14' });
+		$('#selectquery').append(option.text('LUBM-14'));
+	}
+}
+
+function DataSelectEventPerform() {
+	var x = document.getElementById("selectdata-perform").value;
+    //document.getElementById("selectquery").innerHTML = "You selected: " + x;
+	if (x != "LUBM100M") {
+		$('#selectquery-perform option').remove();
+		var option = $('<option></option>').attr({ value:'select' });
+		$('#selectquery-perform').append(option.text('Select Query'));
+		option = $('<option></option>').attr({ value:'WatDiv10' });
+		$('#selectquery-perform').append(option.text('WatDiv-10'));
+		option = $('<option></option>').attr({ value:'WatDiv100' });
+		$('#selectquery-perform').append(option.text('WatDiv-100'));
+		option = $('<option></option>').attr({ value:'WatDiv500', selected:'selected' });
+		$('#selectquery-perform').append(option.text('WatDiv-700'));
+		option = $('<option></option>').attr({ value:'WatDiv1000' });
+		$('#selectquery-perform').append(option.text('WatDiv-1000'));
+		option = $('<option></option>').attr({ value:'WatDiv10000' });
+		$('#selectquery-perform').append(option.text('WatDiv-10000'));
+	}
+	else {
+		$('#selectquery-perform option').remove();
+		var option = $('<option></option>').attr({ value:'select' });
+		$('#selectquery-perform').append(option.text('Select Query'));
+		option = $('<option></option>').attr({ value:'LUBM14' });
+		$('#selectquery-perform').append(option.text('LUBM-14'));
+	}
+}
+
+function DataSelectEventOpt() {
+    var x = document.getElementById("selectdata-opt").value;
+    //document.getElementById("selectquery").innerHTML = "You selected: " + x;
+	if (x != "LUBM100M") {
+		$('#selectquery-opt option').remove();
+		var option = $('<option></option>').attr({ value:'select' });
+		$('#selectquery-opt').append(option.text('Select Query'));
+		option = $('<option></option>').attr({ value:'WatDiv10' });
+		$('#selectquery-opt').append(option.text('WatDiv-10'));
+		option = $('<option></option>').attr({ value:'WatDiv100', selected:'selected' });
+		$('#selectquery-opt').append(option.text('WatDiv-100'));
+		option = $('<option></option>').attr({ value:'WatDiv500'});
+		$('#selectquery-opt').append(option.text('WatDiv-700'));
+		option = $('<option></option>').attr({ value:'WatDiv1000' });
+		$('#selectquery-opt').append(option.text('WatDiv-1000'));
+		option = $('<option></option>').attr({ value:'WatDiv10000' });
+		$('#selectquery-opt').append(option.text('WatDiv-10000'));
+	}
+	else {
+		$('#selectquery-opt option').remove();
+		var option = $('<option></option>').attr({ value:'select' });
+		$('#selectquery-opt').append(option.text('Select Query'));
+		option = $('<option></option>').attr({ value:'LUBM14' });
+		$('#selectquery-opt').append(option.text('LUBM-14'));
+	}
+}
+
+function QuerySelectEvent() {
+    var x = document.getElementById("selectquery").value;
+    //document.getElementById("selectquery").innerHTML = "You selected: " + x;
+	if (x != "WatDiv10" && x!= "LUBM14") {
+	var size = document.getElementsByName("runsystem").length;
+    for(var i = 0; i < size; i++){
+        if(document.getElementsByName("runsystem")[i].value == "shard"){
+            //alert(document.getElementsByName("checkopt")[i].value);
+			document.getElementsByName("runsystem")[i].checked = false;
+			document.getElementsByName("runsystem")[i].disabled = true;
+        }
+    }
+	} else {
+		var size = document.getElementsByName("runsystem").length;
+		for(var i = 0; i < size; i++){
+			if(document.getElementsByName("runsystem")[i].value == "shard"){
+				//alert(document.getElementsByName("checkopt")[i].value);
+				document.getElementsByName("runsystem")[i].disabled = false;
+			}
+		}
+	}
+}
+function QuerySelectEventPerform() {
+	$('#selectdate-perform option').remove();
+	var data = document.getElementById("selectdata-perform").value;
+	var query = document.getElementById("selectquery-perform").value;
+    //var system = document.getElementById("selectsystem-perform").value;
+    
+	// insert a new tuple into db
+		var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+			console.log("xmlhttp: " + xmlhttp.responseText);
+			var obj = JSON.parse(xmlhttp.responseText);
+
+			if (jQuery.isEmptyObject(obj)) {
+				var option = $('<option></option>').attr({ value:"none" });
+				$('#selectdate-perform').append(option.text("Empty Date"));
+				return;
+			}
+			var option = $('<option></option>').attr({ value:"select" });
+			$('#selectdate-perform').append(option.text("Select Date"));
+			for (i = 0; i < obj.arr.length; i++) {
+				var date = obj.arr[i].reg_date;
+				console.log(obj.arr[i].reg_date);
+				if (i != obj.arr.length-1) {
+					var option = $('<option></option>').attr({ value:date });
+					$('#selectdate-perform').append(option.text(date));
+				} else {
+					var option = $('<option></option>').attr({ value:date });
+					$('#selectdate-perform').append(option.text(date));
+				}
+			}
+          }
+        }
+		if (data.includes("WatDiv")) {
+			if (query.includes("500")) {
+				console.log("phpselectdate_perform.php?dataflag=watdiv&&dataset="+data.replace("WatDiv","")+"&&queryset=700&&opt=optrep");
+			} else {
+				console.log("phpselectdate_perform.php?dataflag=watdiv&&dataset="+data.replace("WatDiv","")+"&&queryset="+query.replace("WatDiv","")+"&&opt=optrep");
+			}
+			xmlhttp.open("GET", "phpselectdate_perform.php?dataflag=watdiv&&dataset="+data.replace("WatDiv","")+"&&queryset="+query.replace("WatDiv","")+"&&opt=optrep", true);
+		} else {
+			xmlhttp.open("GET", "phpselectdate_perform.php?&&dataflag=lubm&&dataset="+data.replace("LUBM","")+"&&queryset="+query.replace("LUBM","")+"&&opt=optrep", true);
+		}
+        xmlhttp.send();
+}
+
+function QuerySelectEventPerformInit() {
+	$('#selectdate-perform option').remove();
+	var data = document.getElementById("selectdata-perform").value;
+	var query = document.getElementById("selectquery-perform").value;
+    //var system = document.getElementById("selectsystem-perform").value;
+    
+	// insert a new tuple into db
+		var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+			console.log("xmlhttp: " + xmlhttp.responseText);
+			var obj = JSON.parse(xmlhttp.responseText);
+
+			if (jQuery.isEmptyObject(obj)) {
+				var option = $('<option></option>').attr({ value:"none" });
+				$('#selectdate-perform').append(option.text("Empty Date"));
+				return;
+			}
+			var option = $('<option></option>').attr({ value:"select" });
+			$('#selectdate-perform').append(option.text("Select Date"));
+			for (i = 0; i < obj.arr.length; i++) {
+				var date = obj.arr[i].reg_date;
+				console.log(obj.arr[i].reg_date);
+				if (i != obj.arr.length-1) {
+					var option = $('<option></option>').attr({ value:date });
+					$('#selectdate-perform').append(option.text(date));
+				} else {
+					var option = $('<option selected></option>').attr({ value:date });
+					$('#selectdate-perform').append(option.text(date));
+				}
+			}
+			
+			DateSelectEventPerform();
+          }
+        }
+		if (data.includes("WatDiv")) {
+			if (query.includes("500")) {	
+				console.log("phpselectdate_perform.php?dataflag=watdiv&&dataset="+data.replace("WatDiv","")+"&&queryset=700&&opt=optrep");
+			} else {
+				console.log("phpselectdate_perform.php?dataflag=watdiv&&dataset="+data.replace("WatDiv","")+"&&queryset="+query.replace("WatDiv","")+"&&opt=optrep");
+			}
+			xmlhttp.open("GET", "phpselectdate_perform.php?dataflag=watdiv&&dataset="+data.replace("WatDiv","")+"&&queryset="+query.replace("WatDiv","")+"&&opt=optrep", true);
+		} else {
+			xmlhttp.open("GET", "phpselectdate_perform.php?&&dataflag=lubm&&dataset="+data.replace("LUBM","")+"&&queryset="+query.replace("LUBM","")+"&&opt=optrep", true);
+		}
+        xmlhttp.send();
+}
+
+
+function SystemSelectEventPerform() {
+	$('#selectdate-perform option').remove();
+	var data = document.getElementById("selectdata-perform").value;
+	var query = document.getElementById("selectquery-perform").value;
+    var system = document.getElementById("selectsystem-perform").value;
+    
+	// insert a new tuple into db
+		var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+			console.log("xmlhttp: " + xmlhttp.responseText);
+			var obj = JSON.parse(xmlhttp.responseText);
+
+			if (jQuery.isEmptyObject(obj)) {
+				var option = $('<option></option>').attr({ value:"none" });
+				$('#selectdate-perform').append(option.text("Empty Date"));
+				return;
+			}
+				
+			var option = $('<option></option>').attr({ value:"select" });
+			$('#selectdate-perform').append(option.text("Select Date"));
+			for (i = 0; i < obj.arr.length; i++) {
+				var date = obj.arr[i].reg_date;
+				console.log(obj.arr[i].reg_date);
+				var option = $('<option></option>').attr({ value:date });
+				$('#selectdate-perform').append(option.text(date));
+			}
+          }
+        }
+		if (data.includes("WatDiv")) {
+			if (query.includes("500")) {		
+				console.log("phpselectdate.php?system="+system+"&&dataflag=watdiv&&dataset="+data.replace("WatDiv","")+"&&queryset=700&&opt=optrep");
+			} else {
+				console.log("phpselectdate.php?system="+system+"&&dataflag=watdiv&&dataset="+data.replace("WatDiv","")+"&&queryset="+query.replace("WatDiv","")+"&&opt=optrep");
+			}
+			xmlhttp.open("GET", "phpselectdate.php?system="+system+"&&dataflag=watdiv&&dataset="+data.replace("WatDiv","")+"&&queryset="+query.replace("WatDiv","")+"&&opt=optrep", true);
+		} else {
+			xmlhttp.open("GET", "phpselectdate.php?system="+system+"&&dataflag=lubm&&dataset="+data.replace("LUBM","")+"&&queryset="+query.replace("LUBM","")+"&&opt=optrep", true);
+		}
+        xmlhttp.send();
+}
+
+
+function OptSelectEventOpt() {
+	$('#selectdate-opt option').remove();
+	var data = document.getElementById("selectdata-opt").value;
+	var query = document.getElementById("selectquery-opt").value;
+    var system = "samuel";
+    
+	// insert a new tuple into db
+		var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+			console.log("xmlhttp: " + xmlhttp.responseText);
+			var obj = JSON.parse(xmlhttp.responseText);
+
+			if (jQuery.isEmptyObject(obj)) {
+				var option = $('<option></option>').attr({ value:"none" });
+				$('#selectdate-opt').append(option.text("Empty Date"));
+				return;
+			}
+			var option = $('<option></option>').attr({ value:"select" });
+			$('#selectdate-opt').append(option.text("Select Date"));
+			for (i = 0; i < obj.arr.length; i++) {
+				var date = obj.arr[i].reg_date;
+				console.log(obj.arr[i].reg_date);
+				if (i != obj.arr.length-1) {
+					var option = $('<option></option>').attr({ value:date });
+					$('#selectdate-opt').append(option.text(date));
+				} else {
+					var option = $('<option></option>').attr({ value:date });
+					$('#selectdate-opt').append(option.text(date));
+				}
+			}
+          }
+        }
+		if (data.includes("WatDiv")) {
+			if (query.includes("500")) {		
+				console.log("phpselectdate.php?system="+system+"&&dataflag=watdiv&&dataset="+data.replace("WatDiv","")+"&&queryset=700");
+			} else {
+				console.log("phpselectdate.php?system="+system+"&&dataflag=watdiv&&dataset="+data.replace("WatDiv","")+"&&queryset="+query.replace("WatDiv",""));
+			}
+			xmlhttp.open("GET", "phpselectdate.php?system="+system+"&&dataflag=watdiv&&dataset="+data.replace("WatDiv","")+"&&queryset="+query.replace("WatDiv",""), true);
+		} else {
+			xmlhttp.open("GET", "phpselectdate.php?system="+system+"&&dataflag=lubm&&dataset="+data.replace("LUBM","")+"&&queryset="+query.replace("LUBM",""), true);
+		}
+        xmlhttp.send();
+}
+
+function OptSelectEventOptInit() {
+	$('#selectdate-opt option').remove();
+	var data = document.getElementById("selectdata-opt").value;
+	var query = document.getElementById("selectquery-opt").value;
+    var system = "rdf3x";
+    
+	// insert a new tuple into db
+		var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+			console.log("xmlhttp: " + xmlhttp.responseText);
+			var obj = JSON.parse(xmlhttp.responseText);
+
+			if (jQuery.isEmptyObject(obj)) {
+				var option = $('<option></option>').attr({ value:"none" });
+				$('#selectdate-opt').append(option.text("Empty Date"));
+				return;
+			}
+			var option = $('<option></option>').attr({ value:"select" });
+			$('#selectdate-opt').append(option.text("Select Date"));
+			for (i = 0; i < obj.arr.length; i++) {
+				var date = obj.arr[i].reg_date;
+				console.log(obj.arr[i].reg_date);
+				if (i != obj.arr.length-1) {
+					var option = $('<option></option>').attr({ value:date });
+					$('#selectdate-opt').append(option.text(date));
+				} else {
+					var option = $('<option selected></option>').attr({ value:date });
+					$('#selectdate-opt').append(option.text(date));
+				}
+			}
+			
+			DateSelectEventOpt();
+          }
+        }
+		if (data.includes("WatDiv")) {
+			if (query.includes("500")) {			
+				console.log("phpselectdate.php?system="+system+"&&dataflag=watdiv&&dataset="+data.replace("WatDiv","")+"&&queryset=700");
+			} else {
+				console.log("phpselectdate.php?system="+system+"&&dataflag=watdiv&&dataset="+data.replace("WatDiv","")+"&&queryset="+query.replace("WatDiv",""));
+			}
+			xmlhttp.open("GET", "phpselectdate.php?system="+system+"&&dataflag=watdiv&&dataset="+data.replace("WatDiv","")+"&&queryset="+query.replace("WatDiv",""), true);
+		} else {
+			xmlhttp.open("GET", "phpselectdate.php?system="+system+"&&dataflag=lubm&&dataset="+data.replace("LUBM","")+"&&queryset="+query.replace("LUBM",""), true);
+		}
+        xmlhttp.send();
+}
+
+
+function SystemSelectEvent() {
+	if (document.getElementById("my-checkshard").checked == true) {
+		document.getElementById("my-checksamuel").checked = false;
+		document.getElementById("my-checksamuel").disabled = true;
+	} else {
+		//document.getElementById("my-checksamuel").checked = false;
+		
+		document.getElementById("my-checksamuel").disabled = false;
+	}
+	if (document.getElementById("my-checksamuel").checked == true) {
+		document.getElementById("my-checkshard").checked = false;
+		document.getElementById("my-checkshard").disabled = true;
+	} else {
+		//document.getElementById("my-checksamuel").checked = false;
+		var x = document.getElementById("selectquery").value;
+		if (x == "WatDiv10" || x == "LUBM14") {
+			document.getElementById("my-checkshard").disabled = false;
+		}
+	}	
+}
+function OptSelectEvent() {
+    var x = document.getElementById("selectquery").value;
+    //document.getElementById("selectquery").innerHTML = "You selected: " + x;
+	if (x != "WatDiv10") {
+	var size = document.getElementsByName("runsystem").length;
+    for(var i = 0; i < size; i++){
+        if(document.getElementsByName("runsystem")[i].value == "shard"){
+            //alert(document.getElementsByName("checkopt")[i].value);
+			document.getElementsByName("runsystem")[i].disabled = true;
+        }
+    }
+	}
+}
+function drawTableTest() {
+    var my_tbody = document.getElementById('my-tbody');
+    // var row = my_tbody.insertRow(0); // 상단에 추가
+    var row = my_tbody.insertRow( my_tbody.rows.length ); // 하단에 추가
+    var cell1 = row.insertCell(0);
+    var cell2 = row.insertCell(1);
+    cell1.innerHTML = '항목';
+    cell2.innerHTML = new Date().toUTCString();
+  }
+function readQueries() {
+	var query = document.getElementById("selectquery").value;
+	var path = 'default';
+	if (query == 'WatDiv10') {
+		path = 'queryset/watdiv_10q.txt';
+	}
+	else if (query == 'WatDiv100') {
+		path = 'queryset/watdiv_100q_edbtdemo.txt';
+	}
+	else if (query == 'WatDiv500') {
+		path = 'queryset/watdiv_500q_edbtdemo.txt';
+	}
+	else if (query == 'WatDiv1000') {
+		path = 'queryset/watdiv_1000q.txt';
+	}
+	else if (query == 'WatDiv10000') {
+		path = 'queryset/watdiv_10000q.txt';
+	}
+	else if (query == 'LUBM14') {
+		path = 'queryset/lubm_14q.txt';
+	}
+	$.get(path, function(data) {
+       //console.log(data);
+	   $("#my-textarea").val(data);
+    }, "text");
+}
+
+function showQueryIdsTest() {
+	var systemselectVal = $("#my-systemresselect option:selected").val();
+	//var queryselectVal = $("#my-queryresselect option:selected").val();
+	//console.log(selectVal);
+	//$('#table > thead').remove();
+	//$('#table > tbody').remove();
+	//readFiles(selectVal);
+	console.log(systemselectVal);
+	getId(systemselectVal);
+}
+
+function showQueryResults() {
+	var systemselectVal = $("#my-systemresselect option:selected").val();
+	var queryselectVal = $("#my-queryresselect option:selected").val();
+	//console.log(selectVal);
+	//$('#table > thead').remove();
+	//$('#table > tbody').remove();
+	//readFiles(selectVal);
+	console.log(systemselectVal + ", " + queryselectVal);
+	getResult(systemselectVal, queryselectVal);
+}
+
+
+function getId(systemStr) {
+	var xhttp = new XMLHttpRequest();
+	console.log("get Id");
+	xhttp.onreadystatechange = function() {
+    if (xhttp.readyState == 4 && xhttp.status == 200) {
+		$('#my-queryresselect option').remove();
+
+		var result = JSON.parse(xhttp.responseText);
+		var results = result.results;
+		for (var i = 0; i < result.results.length; i++) {
+			var query = result.results[i];
+			var qid = query.id;
+			console.log("qid: " + qid);
+			//var option = ('<option value="q'+qid+'">output '+qid+'</option>').attr({ id: "myoption"+qid ,class:"myoption"+qid });
+			var option = $('<option></option>').attr({ id: "myoption"+qid ,class:"myoption"+qid, value:qid});
+			$('#my-queryresselect').append(option.text('output '+qid));
+		}
+		console.log("End JSON Parsing");
+		
+		document.getElementById("buttonResShow").disabled = false;
+		
+	}
+	};
+	
+	if (system == "none") {
+		alert("query id is not selected!");
+		return;
+	}
+	if(systemStr == "samuel") {
+		console.log("http://168.188.128.64:8080/EDBTDemo/edbt/example/getSamuelId/");
+		xhttp.open("GET", "http://168.188.128.64:8080/EDBTDemo/edbt/example/getSamuelId", true);
+	} else if (systemStr == "h2rdf") {
+		console.log("http://168.188.128.84:8080/Demo/edbtdemo/example/getH2rdfId/");
+		xhttp.open("GET", "http://168.188.128.84:8080/Demo/edbtdemo/example/getH2rdfId", true);
+	} else if (systemStr == "shape") {
+		console.log("http://168.188.128.71:8080/Demo/edbtdemo/example/getShapeId/");
+		xhttp.open("GET", "http://168.188.128.71:8080/Demo/edbtdemo/example/getShapeId", true);
+	} else if (systemStr == "shard") {
+		console.log("http://168.188.128.64:8080/EDBTDemo/edbt/example/getShardId");
+		xhttp.open("GET", "http://168.188.128.64:8080/EDBTDemo/edbt/example/getShardId", true);
+	} else if (systemStr == "rdf3x") {
+		console.log("http://168.188.128.64:8080/EDBTDemo/edbt/example/getRdf3xId");
+		xhttp.open("GET", "http://168.188.128.64:8080/EDBTDemo/edbt/example/getRdf3xId", true);
+	}
+	xhttp.send();
+}
+function readFiles(qNum)
+{
+    $.get('file.txt', function(data) {
+       console.log(data);
+    }, "text");
+	$.getJSON("jsonTest.json", function(result){
+		console.log(result);
+        /*$.each(result, function(i, exectime){
+            console.log(i + " " + exectime);
+        });*/
+		//var jsonData = jQuery.parseJSON(result);
+		//console.log('file read success');
+		var exectime = result.exectime;
+		console.log("exectime: " + exectime);
+		var success = result.success;
+		console.log("exectime: " + success);
+		var results = result.results;
+		
+		for (var i = 0; i < result.results.length; i++) {
+			var query = result.results[i];
+			var qid = query.id;
+			if (qid == qNum) { //console.log("queryId: " + qid);
+			var triples = query.triples;
+			
+			
+			var tr = $('<tr></tr>'); //creates row
+			var th = $('<th></th>'); //creates table header cells
+			var td = $('<td style="width: 20%;"></td>'); //creates table cells
+			//var td = $('<td></td>');
+	
+			var my_thead = $('<thead></thead>').attr({ id: "mythead"+qid ,class:"mythead"+qid});
+			var header = tr.clone();
+			my_thead.append(header);
+			$('#table').append(my_thead);
+			
+			var my_tbody = $('<tbody></tbody>').attr({ id: "mytbody"+qid ,class:"mytbody"+qid});
+			$('#table').append(my_tbody);
+			
+			for (var j = 0; j < query.triples.length; j++) {
+				var components = query.triples[j].components;
+				if (j == 0) {
+					console.log('time');
+					$thead = $('#table > thead > tr:first');
+					for (var k = 0; k < components.length; k++) {
+						$thead.append('<th style="width: 20%;">'+components[k].variable+'</th>');
+					}
+					
+				}
+	
+				var row = tr.clone(); //creates a row
+				for (var k = 0; k < components.length; k++) {
+					var component = components[k];
+					var variable = component.variable;
+					var value = component.value;
+					console.log("variable: " + variable);
+					console.log("value: " + value);
+					
+					row.append(td.clone().text(value));
+				}
+				my_tbody.append(row);
+			}
+			}
+		
+		}
+		//document.getElementById("mythead91").style.display = "none";
+		//$(this).parent().find('.mythead').css("display","none");
+		//$('#mythead91').hide("fast"); //for test
+    });
+}
+
+
+function jsonResTest() {
+	var xhttp = new XMLHttpRequest();
+	console.log("json response test");
+
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+		var query = JSON.parse(xhttp.responseText);
+		var name = query.name;
+			console.log("name: " + name);
+		var success = query.success;
+		console.log("success: " + success);
+		}
+	};
+	xhttp.open("GET", "http://localhost:8080/EDBTDemoProject/edbt/example/jsonTest", true);
+	xhttp.send();
+}
+
+function getResult(systemStr, qNum) {
+	var xhttp = new XMLHttpRequest();
+	console.log("get result");
+	$('#table > thead').remove();
+	$('#table > tbody').remove();
+	xhttp.onreadystatechange = function() {
+    if (xhttp.readyState == 4 && xhttp.status == 200) {
+		var query = JSON.parse(xhttp.responseText);
+		var qid = query.id;
+		
+		if (qid == qNum) { //console.log("queryId: " + qid);
+			var triples = query.triples;
+			
+			var tr = $('<tr></tr>'); //creates row
+			var th = $('<th></th>'); //creates table header cells
+			var td = $('<td style="width: 20%;"></td>'); //creates table cells
+			//var td = $('<td></td>');
+	
+			var my_thead = $('<thead></thead>').attr({ id: "mythead"+qid ,class:"mythead"+qid});
+			var header = tr.clone();
+			my_thead.append(header);
+			$('#table').append(my_thead);
+			
+			var my_tbody = $('<tbody></tbody>').attr({ id: "mytbody"+qid ,class:"mytbody"+qid});
+			$('#table').append(my_tbody);
+			
+			for (var j = 0; j < query.triples.length; j++) {
+				var components = query.triples[j].components;
+				if (j == 0) {
+					console.log('time');
+					$thead = $('#table > thead > tr:first');
+					for (var k = 0; k < components.length; k++) {
+						$thead.append('<th style="width: 20%;">'+components[k].variable+'</th>');
+					}
+					
+				}
+	
+				var row = tr.clone(); //creates a row
+				for (var k = 0; k < components.length; k++) {
+					var component = components[k];
+					var variable = component.variable;
+					var value = component.value;
+					console.log("variable: " + variable);
+					console.log("value: " + value);
+					
+					row.append(td.clone().text(value));
+				}
+				my_tbody.append(row);
+			}
+		}
+		
+	}
+	};
+	
+	if (qNum == "none") {
+		alert("query id is not selected!");
+		return;
+	}
+	if(systemStr == "samuel") {
+		console.log("http://168.188.128.64:8080/EDBTDemo/edbt/example/getSamuelResult/id="+qNum);
+		xhttp.open("GET", "http://168.188.128.64:8080/EDBTDemo/edbt/example/getSamuelResult/id="+qNum, true);
+	} else if (systemStr == "h2rdf") {
+		console.log("http://168.188.128.84:8080/Demo/edbtdemo/example/getH2rdfResult/id="+qNum);
+		xhttp.open("GET", "http://168.188.128.84:8080/Demo/edbtdemo/example/getH2rdfResult/id="+qNum, true);
+	} else if (systemStr == "shape") {
+		console.log("http://168.188.128.71:8080/Demo/edbtdemo/example/getShapeResult/id="+qNum);
+		xhttp.open("GET", "http://168.188.128.71:8080/Demo/edbtdemo/example/getShapeResult/id="+qNum, true);
+	} else if (systemStr == "shard") {
+		console.log("http://168.188.128.64:8080/EDBTDemo/edbt/example/getShardResult/id="+qNum);
+		xhttp.open("GET", "http://168.188.128.64:8080/EDBTDemo/edbt/example/getShardResult/id="+qNum, true);
+	} else if (systemStr == "rdf3x") {
+		console.log("http://168.188.128.64:8080/EDBTDemo/edbt/example/getRdf3xResult/id="+qNum);
+		xhttp.open("GET", "http://168.188.128.64:8080/EDBTDemo/edbt/example/getRdf3xResult/id="+qNum, true);
+	}
+	xhttp.send();
+}
+
+function runSamuel(flag, nowTime) {
+	var data = 'default';
+	var query = 'default';
+	var system = 'default';
+	var opt = 'default';
+
+	data = document.getElementById("selectdata").value;
+    
+	query = document.getElementById("selectquery").value;
+
+	size = document.getElementsByName("opt").length;
+    for(var i = 0; i < size; i++){
+        if(document.getElementsByName("opt")[i].checked == true){
+            //alert(document.getElementsByName("checkopt")[i].value);
+			opt = document.getElementsByName("opt")[i].value;
+        }
+    }
+
+	console.log(data);
+	if(query.includes("500")) {
+		console.log("WatDiv700"); }
+	else {
+		console.log(query); }
+	console.log(opt);
+	
+	var xhttp = new XMLHttpRequest();
+	console.log("Start SAMUEL");
+	$("#my-textareaMonitoring").val($("#my-textareaMonitoring").val()+"\n"+"We're running SAMUEL...");
+	//$('#myp').text("We're running SAMUEL...");
+	//$('#myp').css("font-weight","Bold");
+	xhttp.onreadystatechange = function() {
+    if (xhttp.readyState == 4 && xhttp.status == 200) {
+		//console.log(xhttp.responseText);
+		//var obj = JSON.parse(xhttp.responseText);
+		
+		var result = JSON.parse(xhttp.responseText);
+		var exectime = result.exectime;
+		console.log("exectime: " + exectime);
+		var success = result.success;
+		console.log("success: " + success);
+		console.log("End JSON Parsing");
+		$("#my-textareaMonitoring").val($("#my-textareaMonitoring").val()+"\n"+"Execution time of SAMUEL: " + parseInt(exectime)/1000 + " milliseconds");
+		
+		samuelExecFlag = 0;
+		
+		btnActiveCnt--;
+		console.log("button active: " + btnActiveCnt);
+		// insert a new tuple into db
+		var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
+            }
+        }
+		if (data.includes("WatDiv")) {
+			xmlhttp.open("GET", "phpinserttuple.php?system=samuel&dataflag=watdiv&dataset="+data.replace("WatDiv","")+"&queryset="+query.replace("WatDiv","")+"&opt="+opt.toLowerCase()+"&reg_date="+nowTime+"&exectime="+exectime, true);
+		} else {
+			xmlhttp.open("GET", "phpinserttuple.php?system=samuel&dataflag=lubm&dataset="+data.replace("LUBM","")+"&queryset="+query.replace("LUBM","")+"&opt="+opt.toLowerCase()+"&reg_date="+nowTime+"&exectime="+exectime, true);
+		}
+        xmlhttp.send();
+		//$('#myp').text("Execution time: " + exectime + " milliseconds");
+		//$('#myp').css("font-weight","Bold");
+		
+		
+			if ((btnActiveCnt-1) == 0) {
+			document.getElementById("buttonIdShow").disabled = false;
+			document.getElementById("buttonRun").disabled = false;
+			}
+			
+		}
+		else {
+			$("#my-textareaMonitoring").val($("#my-textareaMonitoring").val()+"\n"+"xhttp status " + xhttp.status);
+		}
+		
+		
+	};
+	if(query.includes("500")) {
+		console.log("request str: " + "http://168.188.128.64:8080/EDBTDemo/edbt/example/StartSamuel/data="+data+"&query=WatDiv700&algos="+opt);
+	}
+	else {
+		console.log("request str: " + "http://168.188.128.64:8080/EDBTDemo/edbt/example/StartSamuel/data="+data+"&query="+query+"&algos="+opt);
+	}
+	xhttp.open("GET", "http://168.188.128.64:8080/EDBTDemo/edbt/example/StartSamuel/data="+data+"&query="+query+"&algos="+opt, true);
+	xhttp.send();
+}
+
+function runH2rdf(flag, nowTime) {
+	var data = 'default';
+	var query = 'default';
+	var system = 'default';
+
+	data = document.getElementById("selectdata").value;  
+	query = document.getElementById("selectquery").value;
+
+	console.log(data);
+	if(query.includes("500")) {
+		console.log("WatDiv700"); }
+	else {
+		console.log(query); }
+	console.log(opt);
+	
+	var xhttp = new XMLHttpRequest();
+	console.log("Start H2RDF");
+	$("#my-textareaMonitoring").val($("#my-textareaMonitoring").val()+"\n"+"We're running H2RDF+...");
+	//$('#myp').text("We're running H2RDF+...");
+	//$('#myp').css("font-weight","Bold");
+	xhttp.onreadystatechange = function() {
+    if (xhttp.readyState == 4 && xhttp.status == 200) {
+		//console.log(xhttp.responseText);
+		//var obj = JSON.parse(xhttp.responseText);
+		var result = JSON.parse(xhttp.responseText);
+		var exectime = result.exectime;
+		console.log("exectime: " + exectime);
+		var success = result.success;
+		console.log("success: " + success);
+		console.log("End JSON Parsing");
+		$("#my-textareaMonitoring").val($("#my-textareaMonitoring").val()+"\n"+"Execution time of H2RDF+ " + parseInt(exectime)/1000 + " milliseconds");
+		btnActiveCnt--;
+		console.log("button active: " + btnActiveCnt);
+		// insert a new tuple into db
+		var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
+            }
+        }
+		if (data.includes("WatDiv")) {
+			xmlhttp.open("GET", "phpinserttuple.php?system=h2rdf&dataflag=watdiv&dataset="+data.replace("WatDiv","")+"&queryset="+query.replace("WatDiv","")+"&opt=optrep&reg_date="+nowTime+"&exectime="+exectime, true);
+		} else {
+			xmlhttp.open("GET", "phpinserttuple.php?system=h2rdf&dataflag=lubm&dataset="+data.replace("LUBM","")+"&queryset="+query.replace("LUBM","")+"&opt=optrep&reg_date="+nowTime+"&exectime="+exectime, true);
+		}
+        xmlhttp.send();
+		//$('#myp').text("Execution time: " + exectime + " milliseconds");
+		//$('#myp').css("font-weight","Bold");
+		
+			if ((btnActiveCnt-1) == 0) {
+			document.getElementById("buttonRun").disabled = false;
+			
+			document.getElementById("buttonIdShow").disabled = false;
+			}
+			
+		
+		}
+		else {
+			$("#my-textareaMonitoring").val($("#my-textareaMonitoring").val()+"\n"+"xhttp status " + xhttp.status);
+		}
+		
+	};
+	if(query.includes("500")) {
+		console.log("request str: " + "http://168.188.128.84:8080/Demo/edbtdemo/example/h2rdfRunQueries/data="+data+"&query=WatDiv700");
+	}
+	else {
+		console.log("request str: " + "http://168.188.128.84:8080/Demo/edbtdemo/example/h2rdfRunQueries/data="+data+"&query="+query);
+	}
+	xhttp.open("GET", "http://168.188.128.84:8080/Demo/edbtdemo/example/h2rdfRunQueries/data="+data+"&query="+query, true);
+	xhttp.send();
+}
+
+function runShape(flag, nowTime) {
+	var data = 'default';
+	var query = 'default';
+	var system = 'default';
+
+	data = document.getElementById("selectdata").value;  
+	query = document.getElementById("selectquery").value;
+
+	console.log(data);
+	if(query.includes("500")) {
+		console.log("WatDiv700"); }
+	else {
+		console.log(query); }
+	console.log(opt);
+	
+	var xhttp = new XMLHttpRequest();
+	console.log("Start SHAPE");
+	$("#my-textareaMonitoring").val($("#my-textareaMonitoring").val()+"\n"+"We're running SHAPE...");
+	
+	//$('#myp').text("We're running SHAPE...");
+	//$('#myp').css("font-weight","Bold");
+	xhttp.onreadystatechange = function() {
+    if (xhttp.readyState == 4 && xhttp.status == 200) {
+		//console.log(xhttp.responseText);
+		//var obj = JSON.parse(xhttp.responseText);
+		var result = JSON.parse(xhttp.responseText);
+		var exectime = result.exectime;
+		console.log("exectime: " + exectime);
+		var success = result.success;
+		console.log("success: " + success);
+		console.log("End JSON Parsing");
+		$("#my-textareaMonitoring").val($("#my-textareaMonitoring").val()+"\n"+"Execution time of SHAPE " + parseInt(exectime)/1000 + " milliseconds");
+		btnActiveCnt--;
+		console.log("button active: " + btnActiveCnt);
+		// insert a new tuple into db
+		var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
+            }
+        }
+		if (data.includes("WatDiv")) {
+			xmlhttp.open("GET", "phpinserttuple.php?system=shape&dataflag=watdiv&dataset="+data.replace("WatDiv","")+"&queryset="+query.replace("WatDiv","")+"&opt=optrep&reg_date="+nowTime+"&exectime="+exectime, true);
+		} else {
+			xmlhttp.open("GET", "phpinserttuple.php?system=shape&dataflag=lubm&dataset="+data.replace("LUBM","")+"&queryset="+query.replace("LUBM","")+"&opt=optrep&reg_date="+nowTime+"&exectime="+exectime, true);
+		}
+        xmlhttp.send();
+		
+		//$('#myp').text("Execution time: " + exectime + " milliseconds");
+		//$('#myp').css("font-weight","Bold");
+		
+			if ((btnActiveCnt-1) == 0) {
+			document.getElementById("buttonRun").disabled = false;
+			
+			document.getElementById("buttonIdShow").disabled = false;
+			}
+			
+		
+		}
+		else {
+			$("#my-textareaMonitoring").val($("#my-textareaMonitoring").val()+"\n"+"xhttp status " + xhttp.status);
+		}
+		
+	};
+	
+	if(query.includes("500")) {
+		console.log("request str: " + "http://168.188.128.71:8080/Demo/edbtdemo/example/shapeRunQueries/data="+data+"&query=WatDiv700");
+		xhttp.open("GET", "http://168.188.128.71:8080/Demo/edbtdemo/example/shapeRunQueries/data="+data+"&query=WatDiv700", true);
+	}
+	else {
+		console.log("request str: " + "http://168.188.128.71:8080/Demo/edbtdemo/example/shapeRunQueries/data="+data+"&query="+query);
+		xhttp.open("GET", "http://168.188.128.71:8080/Demo/edbtdemo/example/shapeRunQueries/data="+data+"&query="+query, true);
+	}
+	//xhttp.open("GET", "http://168.188.128.71:8080/Demo/edbtdemo/example/shapeRunQueries/data="+data+"&query="+query, true);
+	xhttp.send();
+}
+function runShard(flag, nowTime) {
+	var data = 'default';
+	var query = 'default';
+	var system = 'default';
+
+	data = document.getElementById("selectdata").value;  
+	query = document.getElementById("selectquery").value;
+
+	console.log(data);
+	if(query.includes("500")) {
+		console.log("WatDiv700"); }
+	else {
+		console.log(query); }
+	console.log(opt);
+	
+	var xhttp = new XMLHttpRequest();
+	console.log("Start SHARD");
+	$("#my-textareaMonitoring").val($("#my-textareaMonitoring").val()+"\n"+"We're running SHARD...");
+	
+	//$('#myp').text("We're running SHARD...");
+	//$('#myp').css("font-weight","Bold");
+	
+	xhttp.onreadystatechange = function() {
+    if (xhttp.readyState == 4 && xhttp.status == 200) {
+		//console.log(xhttp.responseText);
+		//var obj = JSON.parse(xhttp.responseText);
+		var result = JSON.parse(xhttp.responseText);
+		var exectime = result.exectime;
+		console.log("exectime: " + exectime);
+		var success = result.success;
+		console.log("success: " + success);
+		console.log("End JSON Parsing");
+		
+		$("#my-textareaMonitoring").val($("#my-textareaMonitoring").val()+"\n"+"Execution time of SHARD " + parseInt(exectime)/1000 + " milliseconds");
+		btnActiveCnt--;
+		console.log("button active: " + btnActiveCnt);
+	// insert a new tuple into db
+		var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
+            }
+        }
+		if (data.includes("WatDiv")) {
+			xmlhttp.open("GET", "phpinserttuple.php?system=shard&dataflag=watdiv&dataset="+data.replace("WatDiv","")+"&queryset="+query.replace("WatDiv","")+"&opt=optrep&reg_date="+nowTime+"&exectime="+exectime, true);
+		} else {
+			xmlhttp.open("GET", "phpinserttuple.php?system=shard&dataflag=lubm&dataset="+data.replace("LUBM","")+"&queryset="+query.replace("LUBM","")+"&opt=optrep&reg_date="+nowTime+"&exectime="+exectime, true);
+		}
+        xmlhttp.send();
+		
+		//$('#myp').text("Execution time: " + exectime + " milliseconds");
+		//$('#myp').css("font-weight","Bold");
+		
+			if ((btnActiveCnt-1) == 0) {
+			document.getElementById("buttonRun").disabled = false;
+			document.getElementById("buttonIdShow").disabled = false;
+			}
+
+		
+		
+		}
+		else {
+			$("#my-textareaMonitoring").val($("#my-textareaMonitoring").val()+"\n"+"xhttp status " + xhttp.status);
+		}
+		
+	};
+	
+	if(query.includes("500")) {
+		console.log("request str: " + "http://168.188.128.64:8080/EDBTDemo/edbt/example/shardRunQueries/data="+data+"&query=WatDiv700");
+	}
+	else {
+		console.log("request str: " + "http://168.188.128.64:8080/EDBTDemo/edbt/example/shardRunQueries/data="+data+"&query="+query);
+	}
+	xhttp.open("GET", "http://168.188.128.64:8080/EDBTDemo/edbt/example/shardRunQueries/data="+data+"&query="+query, true);
+	xhttp.send();
+}
+
+function runRdf3x(flag, nowTime) {
+	var data = 'default';
+	var query = 'default';
+	var system = 'default';
+	var exectime = 'default';
+
+	data = document.getElementById("selectdata").value;  
+	query = document.getElementById("selectquery").value;
+
+	console.log(data);
+	if(query.includes("500")) {
+		console.log("WatDiv700"); }
+	else {
+		console.log(query); }
+	console.log(opt);
+	
+	var xhttp = new XMLHttpRequest();
+	console.log("Start RDF3X");
+	
+	$("#my-textareaMonitoring").val($("#my-textareaMonitoring").val()+"\n"+"We're running RDF3X...");
+	
+	//$('#myp').text("We're running RDF3X...");
+	//$('#myp').css("font-weight","Bold");
+	
+	xhttp.onreadystatechange = function() {
+    if (xhttp.readyState == 4 && xhttp.status == 200) {
+		//console.log(xhttp.responseText);
+		//var obj = JSON.parse(xhttp.responseText);
+		var result = JSON.parse(xhttp.responseText);
+		exectime = result.exectime;
+		console.log("exectime: " + exectime);
+		var success = result.success;
+		console.log("success: " + success);
+		console.log("End JSON Parsing");
+		
+		$("#my-textareaMonitoring").val($("#my-textareaMonitoring").val()+"\n"+"Execution time of RDF3X " + parseInt(exectime)/1000 + " milliseconds");
+		btnActiveCnt--;
+		console.log("button active: " + btnActiveCnt);
+		if (samuelExecFlag == 1) {
+			runSamuel(0, nowTime);
+		}
+		// insert a new tuple into db
+		
+	var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			console.log(this.responseText);
+		}
+	}
+	if (data.includes("WatDiv")) {
+		console.log("GET", "phpinserttuple.php?system=rdf3x&dataflag=watdiv&dataset="+data.replace("WatDiv","")+"&queryset="+query.replace("WatDiv","")+"&opt=optrep&reg_date="+nowTime+"&exectime="+exectime);
+		xmlhttp.open("GET", "phpinserttuple.php?system=rdf3x&dataflag=watdiv&dataset="+data.replace("WatDiv","")+"&queryset="+query.replace("WatDiv","")+"&opt=optrep&reg_date="+nowTime+"&exectime="+parseInt(exectime), true);
+	} else {
+		console.log("GET", "phpinserttuple.php?system=rdf3x&dataflag=lubm&dataset="+data.replace("LUBM","")+"&queryset="+query.replace("LUBM","")+"&opt=optrep&reg_date="+nowTime+"&exectime="+exectime);
+		xmlhttp.open("GET", "phpinserttuple.php?system=rdf3x&dataflag=lubm&dataset="+data.replace("LUBM","")+"&queryset="+query.replace("LUBM","")+"&opt=optrep&reg_date="+nowTime+"&exectime="+parseInt(exectime), true);
+	}
+    xmlhttp.send();
+		//$('#myp').text("Execution time: " + exectime + " milliseconds");
+		//$('#myp').css("font-weight","Bold");
+		
+			if ((btnActiveCnt-1) == 0) {
+			document.getElementById("buttonRun").disabled = false;
+			document.getElementById("buttonIdShow").disabled = false;
+			}
+		} 
+		else {
+			$("#my-textareaMonitoring").val($("#my-textareaMonitoring").val()+"\n"+"xhttp status " + xhttp.status);
+		}
+		
+	};
+	if(query.includes("500")) {
+		console.log("request str: " + "http://168.188.128.64:8080/EDBTDemo/edbt/example/rdf3xRunQueries/data="+data+"&query=WatDiv700");
+		xhttp.open("GET", "http://168.188.128.64:8080/EDBTDemo/edbt/example/rdf3xRunQueries/data="+data+"&query=WatDiv700", true);
+	}
+	else {
+		console.log("request str: " + "http://168.188.128.64:8080/EDBTDemo/edbt/example/rdf3xRunQueries/data="+data+"&query="+query);
+		xhttp.open("GET", "http://168.188.128.64:8080/EDBTDemo/edbt/example/rdf3xRunQueries/data="+data+"&query="+query, true);
+	}
+	//xhttp.open("GET", "http://168.188.128.64:8080/EDBTDemo/edbt/example/rdf3xRunQueries/data="+data+"&query="+query, true);
+	xhttp.send();
+}
+
+function drawTables()
+{	$.getJSON("jsonTest.json", function(result){
+		console.log(result);
+        /*$.each(result, function(i, exectime){
+            console.log(i + " " + exectime);
+        });*/
+		//var jsonData = jQuery.parseJSON(result);
+		//console.log('file read success');
+		var exectime = result.exectime;
+		console.log("exectime: " + exectime);
+		var success = result.success;
+		console.log("exectime: " + success);
+		var results = result.results;
+		
+		for (var i = 0; i < result.results.length; i++) {
+			var query = result.results[i];
+			var qid = query.id;
+			
+			var triples = query.triples;
+			var tr = $('<tr></tr>'); //creates row
+			var th = $('<th></th>'); //creates table header cells
+			var td = $('<td style="width: 20%;"></td>'); //creates table cells
+			//var td = $('<td></td>');
+	
+			var my_thead = $('<thead></thead>').attr({ id: "mythead"+qid ,class:"mythead"+qid});
+			var header = tr.clone();
+			my_thead.append(header);
+			$('#table').append(my_thead);
+			
+			var my_tbody = $('<tbody></tbody>').attr({ id: "mytbody"+qid ,class:"mytbody"+qid});
+			$('#table').append(my_tbody);
+			
+			for (var j = 0; j < query.triples.length; j++) {
+				var components = query.triples[j].components;
+				if (j == 0) {
+					console.log('time');
+					$thead = $('#table > thead > tr:first');
+					for (var k = 0; k < components.length; k++) {
+						$thead.append('<th style="width: 20%;">'+components[k].variable+'</th>');
+					}
+					
+				}
+	
+				var row = tr.clone(); //creates a row
+				for (var k = 0; k < components.length; k++) {
+					var component = components[k];
+					var variable = component.variable;
+					var value = component.value;
+					console.log("variable: " + variable);
+					console.log("value: " + value);
+					
+					row.append(td.clone().text(value));
+				}
+				my_tbody.append(row);
+			}
+			
+			//document.getElementById("mythead"+qid).style.display = "none";
+			//document.getElementById("mytbody"+qid).style.display = "none";
+		}
+		//document.getElementById("mythead").style.display = "none";
+		//$(this).parent().find('.mythead').css("display","none");
+		//$('#mythead91').hide("fast"); //for test
+    });
+}
+
+var btnActiveCnt = 0;
+var samuelExecFlag = 0;
+function runAction() {
+	var system = [];
+	var dt = new Date().YYYYMMDDHHMMSS();
+	btnActive = 0;
+	document.getElementById("buttonRun").disabled = true;
+	document.getElementById("buttonIdShow").disabled = true;
+	document.getElementById("buttonResShow").disabled = true;
+	
+	var	size = document.getElementsByName("runsystem").length;
+    for(var i = 0; i < size; i++){
+        if(document.getElementsByName("runsystem")[i].checked == true){
+			system.push(document.getElementsByName("runsystem")[i].value);
+        }
+		btnActiveCnt++;
+    }
+	$('#my-systemresselect option').remove();
+	
+	console.log("button active: " + btnActiveCnt);
+	for (var i = 0; i < system.length; i++) {
+	console.log("system: " + system);
+	if (system[i] == "samuel") {
+		var option = $('<option></option>').attr({ value: 'samuel' });
+		$('#my-systemresselect').append(option.text("SAMUEL"));
+		samuelExecFlag = 1;
+		//runSamuel(0, dt);
+	
+	} else if (system[i] == "h2rdf") {
+		var option = $('<option></option>').attr({ value: 'h2rdf' });
+		$('#my-systemresselect').append(option.text("H2RDF+"));
+			
+		runH2rdf(0, dt);
+	} else if (system[i] == "shape") {
+		var option = $('<option></option>').attr({ value: 'shape' });
+		$('#my-systemresselect').append(option.text("SHAPE"));
+	
+		runShape(0, dt);
+	} else if (system[i] == "shard") {
+		var option = $('<option></option>').attr({ value: 'shard' });
+		$('#my-systemresselect').append(option.text("SHARD"));
+			
+		runShard(0, dt);
+		
+	} else if (system[i] == "rdf3x") {
+		var option = $('<option></option>').attr({ value: 'rdf3x' });
+		$('#my-systemresselect').append(option.text("RDF3X"));
+		
+		runRdf3x(0, dt);
+		/*
+		if (i == system.length-1) {
+			runRdf3x(1, dt);
+		} else {
+			runRdf3x(0, dt);
+		}*/
+	}
+	}
+	//document.getElementById("buttonRun").disabled = false;
+}
+
+function showQueryIds() {
+	document.getElementById("buttonRun").disabled = true;
+	$.getJSON("jsonTest.json", function(result){
+		$('#my-queryresselect option:first').remove();
+		console.log(result);
+        /*$.each(result, function(i, exectime){
+            console.log(i + " " + exectime);
+        });*/
+		//var jsonData = jQuery.parseJSON(result);
+		//console.log('file read success');
+		var exectime = result.exectime;
+		console.log("exectime: " + exectime);
+		var success = result.success;
+		console.log("success: " + success);
+		var results = result.results;
+		for (var i = 0; i < result.results.length; i++) {
+			var query = result.results[i];
+			var qid = query.id;
+			console.log("qid: " + qid);
+			//var option = ('<option value="q'+qid+'">output '+qid+'</option>').attr({ id: "myoption"+qid ,class:"myoption"+qid });
+			var option = $('<option></option>').attr({ id: "myoption"+qid ,class:"myoption"+qid, value:qid});
+			$('#my-queryresselect').append(option.text('output '+qid));
+		}
+    });
+}
+
+function openCity(evt, cityName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(cityName).style.display = "block";
+	if (cityName.includes("compare")) {
+		QuerySelectEventPerformInit();
+		OptSelectEventOptInit();
+	}
+    evt.currentTarget.className += " active";
+}
+
+Object.defineProperty(Date.prototype, 'YYYYMMDDHHMMSS', {
+    value: function() {
+        function pad2(n) {  // always returns a string
+            return (n < 10 ? '0' : '') + n;
+        }
+
+        return this.getFullYear() + "-" +
+               pad2(this.getMonth() + 1) + "-" + 
+               pad2(this.getDate()) + " " +
+               pad2(this.getHours()) + ":" +
+               pad2(this.getMinutes()) + ":" +
+               pad2(this.getSeconds());
+    }
+});
+
+</script>
+     
+</body>
+</html> 
